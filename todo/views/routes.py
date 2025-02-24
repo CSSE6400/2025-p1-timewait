@@ -10,69 +10,66 @@ def health():
 # just saving tasks in memory.
 tasks = []
 next_id = 1
-@api.route('/todos', methods=['GET'])
-def get_todos():
-    completed = request.args.get('completed')
-    window = request.args.get('window', type=int)
-    filtered_tasks = tasks
+@api.route('/todos', methods=['GET']) 
+def get_todos(): 
+   return jsonify([{ 
+     "id": 1, 
+     "title": "Watch CSSE6400 Lecture", 
+     "description": "Watch the CSSE6400 lecture on ECHO360 for week 1", 
+     "completed": True, 
+     "deadline_at": "2023-02-27T00:00:00", 
+     "created_at": "2023-02-20T00:00:00", 
+      "updated_at": "2023-02-20T00:00:00" 
+    }])
 
-    if completed is not None:
-        completed = completed.lower() == 'true'
-        filtered_tasks = [task for task in filtered_tasks if task['completed'] == completed]
+@api.route('/todos/<int:id>', methods=['GET']) 
+def get_todo(id): 
+   return jsonify({ 
+     "id": id, 
+     "title": "Watch CSSE6400 Lecture", 
+     "description": "Watch the CSSE6400 lecture on ECHO360 for week 1", 
+     "completed": True, 
+     "deadline_at": "2023-02-27T00:00:00", 
+     "created_at": "2023-02-20T00:00:00", 
+      "updated_at": "2023-02-20T00:00:00" 
+    })
 
-    if window is not None:
-        due_date = datetime.now() + timedelta(days=window)
-        filtered_tasks = [task for task in filtered_tasks if datetime.fromisoformat(task['deadline_at']) <= due_date]
+@api.route('/todos', methods=['POST']) 
+def create_todo(): 
+   return jsonify({ 
+     "id": 1, 
+     "title": "Watch CSSE6400 Lecture", 
+     "description": "Watch the CSSE6400 lecture on ECHO360 for week 1", 
+     "completed": True, 
+     "deadline_at": "2023-02-27T00:00:00", 
+     "created_at": "2023-02-20T00:00:00", 
+      "updated_at": "2023-02-20T00:00:00" 
+    }), 201
 
-    return jsonify(filtered_tasks), 200
 
-@api.route('/todos/<int:task_id>', methods=['GET'])
-def get_todo(task_id):
-    task = next((task for task in tasks if task['id'] == task_id), None)
-    if task is None:
-        abort(404)
-    return jsonify(task), 200
-
-@api.route('/todos', methods=['POST'])
-def create_todo():
-    if not request.json or 'title' not in request.json:
-        abort(400)
-
-    global next_id
-    task = {
-        'id': next_id,
-        'title': request.json['title'],
-        'description': request.json.get('description', ''),
-        'completed': request.json.get('completed', False),
-        'deadline_at': request.json.get('deadline_at', datetime.now().isoformat()),
-        'created_at': datetime.now().isoformat(),
-        'updated_at': datetime.now().isoformat()
-    }
-    tasks.append(task)
-    next_id += 1
-    return jsonify(task), 201
-
-@api.route('/todos/<int:task_id>', methods=['PUT'])
-def update_todo(task_id):
-    task = next((task for task in tasks if task['id'] == task_id), None)
-    if task is None:
-        abort(404)
-
-    if not request.json:
-        abort(400)
-
-    for key in ['title', 'description', 'completed', 'deadline_at']:
-        if key in request.json:
-            task[key] = request.json[key]
-
-    task['updated_at'] = datetime.now().isoformat()
-    return jsonify(task), 200
-
-@api.route('/todos/<int:task_id>', methods=['DELETE'])
-def delete_todo(task_id):
-    global tasks
-    tasks = [task for task in tasks if task['id'] != task_id]
-    return '', 200
+@api.route('/todos/<int:id>', methods=['PUT']) 
+def update_todo(id): 
+   return jsonify({ 
+     "id": id, 
+     "title": "Watch CSSE6400 Lecture", 
+     "description": "Watch the CSSE6400 lecture on ECHO360 for week 1", 
+     "completed": True, 
+     "deadline_at": "2023-02-27T00:00:00", 
+     "created_at": "2023-02-20T00:00:00", 
+      "updated_at": "2023-02-20T00:00:00" 
+    })
+    
+@api.route('/todos/<int:id>', methods=['DELETE']) 
+def delete_todo(id): 
+   return jsonify({ 
+     "id": id, 
+     "title": "Watch CSSE6400 Lecture", 
+     "description": "Watch the CSSE6400 lecture on ECHO360 for week 1", 
+     "completed": True, 
+     "deadline_at": "2023-02-27T00:00:00", 
+     "created_at": "2023-02-20T00:00:00", 
+      "updated_at": "2023-02-20T00:00:00" 
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
